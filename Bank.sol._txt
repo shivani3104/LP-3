@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: GPL-3.0
+
+pragma solidity >=0.8.2 <0.9.0;
+
+contract Bank{
+  struct Customer{
+    uint id;
+    uint balance;
+    uint age;
+  }
+
+  event CustomerAdd(uint id, uint balance, uint age);
+
+  constructor() payable {
+
+  }
+
+  Customer[] public cust;
+
+  function addCustomer(uint _id, uint _balance, uint _age) public {
+    cust.push(Customer(_id, _balance, _age));
+    emit CustomerAdd(_id, _balance, _age);
+  }
+
+  function customerCount() public view returns (uint){
+    return cust.length;
+  }
+
+  function deposit(uint _id, uint amount) public {
+    for(uint i=0; i<cust.length; i++){
+      require(cust[i].id == _id, "customer does not exist");
+      if(cust[i].id == _id){
+        cust[i].balance += amount;
+      }
+    }
+  }
+  function withdraw(uint _id, uint amount) public {
+    for(uint i=0; i<cust.length; i++){
+      require(cust[i].balance >= amount, "insufficient balance");
+      if(cust[i].id == _id){
+        cust[i].balance -= amount;
+      }
+    }
+  }
+
+  function getBalance(uint _id) public view returns (uint balance){
+    for(uint i=0; i<cust.length; i++){
+      if(cust[i].id == _id){
+        return cust[i].balance;
+      }
+    }
+  }
+}
